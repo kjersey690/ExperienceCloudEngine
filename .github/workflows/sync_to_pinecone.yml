@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install supabase pinecone-client sentence-transformers python-dotenv
+          pip install supabase pinecone sentence-transformers python-dotenv
 
       - name: Execute Sync Script
         env:
