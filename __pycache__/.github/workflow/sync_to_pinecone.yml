@@ -1,0 +1,33 @@
+name: Sync Approved Errors to Pinecone
+
+# This tells GitHub to listen for the "ping" from your Supabase Webhook
+on:
+  repository_dispatch:
+    types: [supabase_approval]
+  workflow_dispatch: # This allows you to run it manually from the GitHub UI for testing
+
+jobs:
+  sync_data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: |
+          pip install supabase pinecone-client sentence-transformers python-dotenv
+
+      - name: Execute Sync Script
+        env:
+          # These link the GitHub Secrets you created to the script's environment
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          PINECONE_INDEX_NAME: ${{ secrets.PINECONE_INDEX_NAME }}
+        run: python sync_to_pinecone.py
